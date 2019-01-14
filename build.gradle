@@ -14,6 +14,14 @@ kotlin {
         fromPreset(presets.macosX64, 'Hello') {
             compilations.main.outputKinds 'EXECUTABLE'
             compilations.main.entryPoint 'sample.hello.main'
+
+            compilations.main.linkerOpts '-L/usr/local/Cellar/sdl2/2.0.9/lib', '-L/usr/local/Cellar/sdl2/2.0.9/lib', '-lSDL2'
+
+            compilations.main.cinterops {
+                sdl {
+                    includeDirs '/usr/local/Cellar/sdl2/2.0.9/include/SDL2', '/usr/local/Cellar/sdl2/2.0.9/include/SDL2'
+                }
+            }
         }
     }
 
