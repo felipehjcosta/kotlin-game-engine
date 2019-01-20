@@ -44,9 +44,14 @@ abstract class GameApplication {
     }
 
     fun run() {
+        val fps = 60.toUInt()
+        val minimumFrameTime = 1000.toUInt() / fps
+
         var isRunning = true
 
         while (isRunning) {
+
+            val frameTime = SDL_GetTicks()
             if (isQuitting) {
                 isRunning = false
             }
@@ -68,7 +73,10 @@ abstract class GameApplication {
             SDL_RenderClear(renderer)
             SDL_RenderPresent(renderer)
 
-            SDL_Delay(4000.toUInt())
+            val timeBetweenLastFrameAndCurrentFrame = SDL_GetTicks() - frameTime
+            if (timeBetweenLastFrameAndCurrentFrame < minimumFrameTime) {
+                SDL_Delay(minimumFrameTime - timeBetweenLastFrameAndCurrentFrame)
+            }
         }
     }
 }
