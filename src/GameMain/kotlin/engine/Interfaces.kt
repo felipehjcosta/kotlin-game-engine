@@ -5,7 +5,7 @@ interface GameLogic {
 }
 
 interface GameView {
-    fun onRender(renderer: kotlinx.cinterop.CPointer<cnames.structs.SDL_Renderer>?)
+    fun onRender(renderer: kotlinx.cinterop.CPointer<cnames.structs.SDL_Renderer>?, elapsedTime: UInt)
 }
 
 typealias GameViewList = MutableList<GameView>

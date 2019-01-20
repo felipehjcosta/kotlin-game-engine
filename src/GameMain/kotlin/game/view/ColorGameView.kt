@@ -10,8 +10,8 @@ import kotlin.random.Random
 
 class ColorGameView : GameView {
 
-    override fun onRender(renderer: CPointer<SDL_Renderer>?) {
-        val red = (Random.nextInt() % 255).toUByte()
+    override fun onRender(renderer: CPointer<SDL_Renderer>?, elapsedTime: UInt) {
+        val red = ((Random.nextInt() % 255)).toUByte()
         val green = (Random.nextInt() % 255).toUByte()
         val blue = (Random.nextInt() % 255).toUByte()
 

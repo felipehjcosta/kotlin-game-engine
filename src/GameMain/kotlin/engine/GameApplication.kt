@@ -57,7 +57,7 @@ abstract class GameApplication {
 
         while (isRunning) {
 
-            val frameTime = timer.getTicks
+            timer.tick()
             if (isQuitting) {
                 isRunning = false
             }
@@ -71,15 +71,16 @@ abstract class GameApplication {
                 }
             }
 
-            val timeBetweenLastFrameAndCurrentFrame = timer.getTicks - frameTime
-            onRender(renderer)
+            val timeBetweenLastFrameAndCurrentFrame = timer.delta
+            onRender(renderer, timeBetweenLastFrameAndCurrentFrame)
             if (timeBetweenLastFrameAndCurrentFrame < minimumFrameTime) {
-                SDL_Delay(minimumFrameTime - timeBetweenLastFrameAndCurrentFrame)
+                val delayTime = minimumFrameTime - timeBetweenLastFrameAndCurrentFrame
+                SDL_Delay(delayTime)
             }
         }
     }
 
-    private fun onRender(renderer: kotlinx.cinterop.CPointer<cnames.structs.SDL_Renderer>?) {
-        gameLogic?.gameViews?.forEach { it.onRender(renderer) }
+    private fun onRender(renderer: kotlinx.cinterop.CPointer<cnames.structs.SDL_Renderer>?, elapsedTime: UInt) {
+        gameLogic?.gameViews?.forEach { it.onRender(renderer, elapsedTime) }
     }
 }
