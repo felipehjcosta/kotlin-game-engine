@@ -1,13 +1,17 @@
 package engine
 
 import engine.io.printErr
-import kotlinx.cinterop.*
+import kotlinx.cinterop.alloc
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.reinterpret
 import sdl.*
+import kotlin.random.Random
 
 abstract class GameApplication {
 
     private var window: kotlinx.cinterop.CPointer<cnames.structs.SDL_Window>? = null
-    private var windowSurface: kotlinx.cinterop.CPointer<sdl.SDL_Surface>? = null
+    private var renderer: kotlinx.cinterop.CPointer<cnames.structs.SDL_Renderer>? = null
     private var isQuitting = false
 
     abstract val gameTitle: String
@@ -24,20 +28,22 @@ abstract class GameApplication {
             return false
         }
 
-        windowSurface = SDL_GetWindowSurface(window)
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED)
+        if (renderer == null) {
+            printErr("Could not create a renderer: ${SDL_GetError()}")
+            return false
+        }
 
         return true
     }
 
     fun shutDown() {
+        SDL_DestroyRenderer(renderer)
         SDL_DestroyWindow(window)
         SDL_Quit()
     }
 
     fun run() {
-        SDL_FillRect(windowSurface, null, SDL_MapRGB(windowSurface?.pointed?.format, 0xFF, 0xFF, 0xFF))
-        SDL_UpdateWindowSurface(window)
-
         var isRunning = true
 
         while (isRunning) {
@@ -53,6 +59,16 @@ abstract class GameApplication {
                     }
                 }
             }
+
+            val red = (Random.nextInt() % 255).toUByte()
+            val green = (Random.nextInt() % 255).toUByte()
+            val blue = (Random.nextInt() % 255).toUByte()
+
+            SDL_SetRenderDrawColor(renderer, red, green, blue, 255.toUByte())
+            SDL_RenderClear(renderer)
+            SDL_RenderPresent(renderer)
+
+            SDL_Delay(4000.toUInt())
         }
     }
 }
