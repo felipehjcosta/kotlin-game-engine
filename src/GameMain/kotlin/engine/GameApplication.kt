@@ -4,7 +4,7 @@ import engine.io.printErr
 import kotlinx.cinterop.*
 import sdl.*
 
-class GameApplication {
+abstract class GameApplication {
 
     private var window: kotlinx.cinterop.CPointer<cnames.structs.SDL_Window>? = null
     private var windowSurface: kotlinx.cinterop.CPointer<sdl.SDL_Surface>? = null

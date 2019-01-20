@@ -1,11 +1,9 @@
 package game
 
-import engine.GameApplication
-
 fun main(args: Array<String>) {
     println("Hello, Kotlin/Native!")
 
-    val game = GameApplication()
+    val game = DriftsGameApplication()
 
     if (!game.initInstance()) {
         game.shutDown()
