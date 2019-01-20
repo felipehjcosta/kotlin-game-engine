@@ -16,7 +16,7 @@ class GameApplication {
             return false
         }
 
-        window = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_SHOWN)
+        window = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_OPENGL)
         if (window == null) {
             printErr("could not initialize sdl2: ${SDL_GetError()}")
             return false
