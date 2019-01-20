@@ -10,13 +10,15 @@ abstract class GameApplication {
     private var windowSurface: kotlinx.cinterop.CPointer<sdl.SDL_Surface>? = null
     private var isQuitting = false
 
+    abstract val gameTitle: String
+
     fun initInstance(): Boolean {
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             printErr("could not initialize sdl2: ${SDL_GetError()}")
             return false
         }
 
-        window = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_OPENGL)
+        window = SDL_CreateWindow(gameTitle, 100, 100, 640, 480, SDL_WINDOW_OPENGL)
         if (window == null) {
             printErr("could not initialize sdl2: ${SDL_GetError()}")
             return false
