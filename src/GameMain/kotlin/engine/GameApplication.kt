@@ -44,8 +44,7 @@ abstract class GameApplication {
     }
 
     fun run() {
-        val fps = 60.toUInt()
-        val minimumFrameTime = 1000.toUInt() / fps
+        val minimumFrameTime = 1000.toUInt() / FPS.toUInt()
 
         var isRunning = true
 
