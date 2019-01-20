@@ -1,6 +1,7 @@
 package engine
 
 import engine.io.printErr
+import engine.logic.BaseGameLogic
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.ptr
@@ -14,7 +15,11 @@ abstract class GameApplication {
     private var renderer: kotlinx.cinterop.CPointer<cnames.structs.SDL_Renderer>? = null
     private var isQuitting = false
 
+    private var gameLogic: BaseGameLogic? = null
+
     abstract val gameTitle: String
+
+    abstract fun createGameAndView(): BaseGameLogic
 
     fun initInstance(screenWidth: Int = 640, screenHeight: Int = 480): Boolean {
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -33,6 +38,8 @@ abstract class GameApplication {
             printErr("Could not create a renderer: ${SDL_GetError()}")
             return false
         }
+
+        gameLogic = createGameAndView()
 
         return true
     }
@@ -64,18 +71,16 @@ abstract class GameApplication {
                 }
             }
 
-            val red = (Random.nextInt() % 255).toUByte()
-            val green = (Random.nextInt() % 255).toUByte()
-            val blue = (Random.nextInt() % 255).toUByte()
-
-            SDL_SetRenderDrawColor(renderer, red, green, blue, 255.toUByte())
-            SDL_RenderClear(renderer)
-            SDL_RenderPresent(renderer)
+            onRender(renderer)
 
             val timeBetweenLastFrameAndCurrentFrame = SDL_GetTicks() - frameTime
             if (timeBetweenLastFrameAndCurrentFrame < minimumFrameTime) {
                 SDL_Delay(minimumFrameTime - timeBetweenLastFrameAndCurrentFrame)
             }
         }
+    }
+
+    private fun onRender(renderer: kotlinx.cinterop.CPointer<cnames.structs.SDL_Renderer>?) {
+        gameLogic?.gameViews?.forEach { it.onRender(renderer) }
     }
 }
