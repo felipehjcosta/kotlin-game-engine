@@ -12,13 +12,13 @@ abstract class GameApplication {
 
     abstract val gameTitle: String
 
-    fun initInstance(): Boolean {
+    fun initInstance(screenWidth: Int = 640, screenHeight: Int = 480): Boolean {
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             printErr("could not initialize sdl2: ${SDL_GetError()}")
             return false
         }
 
-        window = SDL_CreateWindow(gameTitle, 100, 100, 640, 480, SDL_WINDOW_OPENGL)
+        window = SDL_CreateWindow(gameTitle, 100, 100, screenWidth, screenHeight, SDL_WINDOW_OPENGL)
         if (window == null) {
             printErr("could not initialize sdl2: ${SDL_GetError()}")
             return false
