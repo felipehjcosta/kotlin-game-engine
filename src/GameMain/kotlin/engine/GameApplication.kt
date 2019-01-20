@@ -2,12 +2,12 @@ package engine
 
 import engine.io.printErr
 import engine.logic.BaseGameLogic
+import engine.time.Timer
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.reinterpret
 import sdl.*
-import kotlin.random.Random
 
 abstract class GameApplication {
 
@@ -52,12 +52,12 @@ abstract class GameApplication {
 
     fun run() {
         val minimumFrameTime = 1000.toUInt() / FPS.toUInt()
-
+        val timer = Timer()
         var isRunning = true
 
         while (isRunning) {
 
-            val frameTime = SDL_GetTicks()
+            val frameTime = timer.getTicks
             if (isQuitting) {
                 isRunning = false
             }
@@ -71,9 +71,8 @@ abstract class GameApplication {
                 }
             }
 
+            val timeBetweenLastFrameAndCurrentFrame = timer.getTicks - frameTime
             onRender(renderer)
-
-            val timeBetweenLastFrameAndCurrentFrame = SDL_GetTicks() - frameTime
             if (timeBetweenLastFrameAndCurrentFrame < minimumFrameTime) {
                 SDL_Delay(minimumFrameTime - timeBetweenLastFrameAndCurrentFrame)
             }
