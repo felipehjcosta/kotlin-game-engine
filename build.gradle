@@ -15,11 +15,20 @@ kotlin {
             compilations.main.outputKinds 'EXECUTABLE'
             compilations.main.entryPoint 'game.main'
 
-            compilations.main.linkerOpts '-L/usr/local/Cellar/sdl2/2.0.9/lib', '-L/usr/local/Cellar/sdl2/2.0.9/lib', '-lSDL2'
+            compilations.main.linkerOpts '-L/usr/local/Cellar/sdl2/2.0.9/lib',
+                                         '-L/usr/local/Cellar/sdl2/2.0.9/lib',
+                                         '-lSDL2',
+                                         '-L/usr/local/Cellar/sdl2_image/2.0.4/lib',
+                                         '-L/usr/local/Cellar/sdl2_image/2.0.4/lib',
+                                         '-lsdl2_image'
 
             compilations.main.cinterops {
                 sdl {
-                    includeDirs '/usr/local/Cellar/sdl2/2.0.9/include/SDL2', '/usr/local/Cellar/sdl2/2.0.9/include/SDL2'
+                    includeDirs '/usr/local/Cellar/sdl2/2.0.9/include/SDL2'
+                }
+                sdl_image {
+                    includeDirs '/usr/local/Cellar/sdl2/2.0.9/include/SDL2',
+                                '/usr/local/Cellar/sdl2_image/2.0.4/include/SDL2'
                 }
             }
         }
@@ -37,6 +46,25 @@ task runProgram {
     doLast {
         exec {
             executable kotlin.targets.Game.compilations.main.getBinary('EXECUTABLE', buildType)
+        }
+    }
+}
+
+afterEvaluate {
+    kotlin.targets.Game.compilations.main { mainCompilation ->
+        def linkTasks = ['RELEASE', 'DEBUG']
+                .collect { mainCompilation.findLinkTask('EXECUTABLE', it) }
+                .findAll { it != null }
+
+        linkTasks.each { task ->
+
+            task.doLast {
+                copy {
+                    from kotlin.sourceSets.GameMain.resources
+                    into task.outputFile.get().parentFile
+                    exclude '*.rc'
+                }
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ import engine.GameApplication
 import engine.logic.BaseGameLogic
 import game.logic.DriftsGameLogic
 import game.view.ColorGameView
+import game.view.ImageGameView
 
 class DriftsGameApplication : GameApplication() {
 
@@ -12,7 +13,7 @@ class DriftsGameApplication : GameApplication() {
 
     override fun createGameAndView(): BaseGameLogic {
         return DriftsGameLogic().apply {
-            addGameView(ColorGameView())
+            addGameView(ImageGameView())
         }
     }
 }
